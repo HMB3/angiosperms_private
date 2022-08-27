@@ -103,7 +103,7 @@ Calytrix.clim.grids.15km <- raster::stack(
 Calytrix.phylo.grids.15km  <- raster::stack(
   list.files('./data/SWAFR_data/Results/Calytrix/', pattern ="_trimmed_", full.names = TRUE)) %>% 
   .[!. %in% list.files('./data/SWAFR_data/Results/Calytrix/',  pattern ="_15km_", full.names = TRUE) ]
-  
+
 
 Daviesia.clim.grids.15km <- raster::stack(
   list.files('./data/SWAFR_data/Results/Daviesia/',  pattern ="_15km_", full.names = TRUE))
@@ -156,28 +156,18 @@ names(Calytrix.phylo.grids.15km)   <- gsub("SWAFR_epsg_3577_trimmed_", "",  name
 
 # STEP 4 :: pLOT ----
 # Create all the possible combinations of the two lists
-combo <- expand.grid(names(Acacia.clim.grids.15km), names(Acacia.phylo.grids.15km))
+acacia_mean_grids <- expand.grid(names(Acacia.clim.grids.15km), 
+                                 names(Acacia.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  dplyr::filter(grepl("mean_MEAN", raster1))
 
 
-LG21_GWR_models <- gwr_formula_analyses(analysis_data = test_data,
-                                        
-                                        ## A list of formulae for the GWR models
-                                        formula_list  = c('Respondent_Satisfied ~ Venue_Voting_Load',
-                                                          'Respondent_Dissatisfied ~ Venue_Voting_Load',
-                                                          'Counting ~ Venue_Voting_Load',
-                                                          'IS ~ Venue_Voting_Load',
-                                                          'Counting ~ Venue_Voting_Load',
-                                                          'Logistics ~ Venue_Voting_Load',
-                                                          'Operations ~ Venue_Voting_Load',
-                                                          'Recruitment ~ Venue_Voting_Load',
-                                                          'Staffing ~ Venue_Voting_Load',
-                                                          'Training ~ Venue_Voting_Load',
-                                                          'Venues ~ Venue_Voting_Load',
-                                                          'WHS ~ Venue_Voting_Load'),
-                                        
-                                        ## Use adaptive GWR bandwidth estimation, and multiple cores
-                                        adapt          = TRUE,
-                                        clust          = cl)
+raster_combo_scatters(plot_list            = acacia_mean_grids,
+                      climate_raster_stack = Acacia.clim.grids.15km,
+                      context_raser_stack  = Acacia.phylo.grids.15km,
+                      out_dir              = paste0(swafr_out_dir, 'Acacia/'))
 
 
 
