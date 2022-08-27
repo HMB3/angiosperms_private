@@ -44,7 +44,7 @@ raster_combo_scatters <- function(plot_list,
     ## row <- length[1]
     
     ## i <- length[10]
-    message("Creating scatterplot for combo ", i, '/', rows)
+    message("Creating scatterplot for combo ", i, '-=, rows)
     
     clim_ras <- plot_list[i,][["raster1"]] %>% as.character()
     cont_ras <- plot_list[i,][["raster2"]] %>% as.character()

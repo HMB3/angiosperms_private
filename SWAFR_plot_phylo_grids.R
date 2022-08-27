@@ -83,6 +83,14 @@ swafr_taxa <- c('Acacia',   'Adenanthos', 'Banksia', 'Calytrix', 'Daviesia', 'Ep
 
 
 ## 15km grids
+All.clim.grids.15km <- raster::stack(
+  list.files('./data/SWAFR_data/Results/All_genera/',  pattern ="_15km_", full.names = TRUE))
+
+All.phylo.grids.15km  <- raster::stack(
+  list.files('./data/SWAFR_data/Results/All_genera/', pattern ="_trimmed_", full.names = TRUE)) %>% 
+  .[!. %in% list.files('./data/SWAFR_data/Results/All_genera/',  pattern ="_15km_", full.names = TRUE)]
+
+
 Acacia.clim.grids.15km <- raster::stack(
   list.files('./data/SWAFR_data/Results/Acacia/',  pattern ="_climate_", full.names = TRUE))
 
@@ -126,6 +134,9 @@ Eucalypt.phylo.grids.15km  <- raster::stack(
   list.files('./data/SWAFR_data/Results/Eucalypt/', pattern ="_trimmed_", full.names = TRUE)) 
 
 
+## Rename the grids because I stuffed up in Biodiverse
+names(Acacia.clim.grids.15km)      <- gsub("SWAFR_climate_",           "",  names(Acacia.clim.grids.15km))
+names(Acacia.phylo.grids.15km)     <- gsub("SWAFR_epsg_3577_trimmed_", "",  names(Acacia.phylo.grids.15km))
 
 names(Acacia.clim.grids.15km)      <- gsub("SWAFR_climate_",           "",  names(Acacia.clim.grids.15km))
 names(Acacia.phylo.grids.15km)     <- gsub("SWAFR_epsg_3577_trimmed_", "",  names(Acacia.phylo.grids.15km))
