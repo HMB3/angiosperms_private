@@ -1,3 +1,6 @@
+###########################################################################################################
+#############################  ----- PHYLO DIVESRITY VS ENVIRONMENT ---- ##################################
+###########################################################################################################
 
 
 ## ENVIRONMENT SETTINGS =============================================================
@@ -13,14 +16,7 @@
 
 ## Set env
 rm(list = ls())
-#if (!Sys.getenv("JAVA_TOOL_OPTIONS")) {
-if (all(Sys.getenv("JAVA_HOME")=="")) {
-  Sys.setenv(JAVA_HOME='C:\\Program Files\\Java\\jre1.8.0_321')
-}
 
-if (all(Sys.getenv("JAVA_TOOL_OPTIONS")=="")) {
-  options(java.parameters = "-Xmx64G")
-}
 
 options(warn=0)
 
@@ -31,8 +27,6 @@ ipak <- function(pkg){
     install.packages(new.pkg, dependencies = TRUE, repos = "https://cran.csiro.au/")
   sapply(pkg, require, character.only = TRUE)
 }
-
-'%!in%' <- function(x,y)!('%in%'(x,y))
 
 
 ## Load packages
@@ -69,9 +63,12 @@ terraOptions(memfrac = 0.9,
 ## To Do :
 ## 1). Check the errors that Finlay may have found
 ## 2). Clean up the folders
+source('./R/raster_scatter_functions.R')
 
 
-## get target taxa
+## Create taxa lists here
+# Insects_ALA_1 <- read_csv('./data/ALA/Insects/recordsd-2022-05-12.csv')
+# Insects_ALA_2 <- read_csv('./data/ALA/Insects/records-2022-05-12_part2.csv')
 swafr_taxa <- c('Acacia',   'Adenanthos', 'Banksia', 'Calytrix', 'Daviesia', 'Epacrids', 
                 'Eucalypt', 'Persoonia',  'Thysanotus')
 
@@ -79,64 +76,76 @@ swafr_taxa <- c('Acacia',   'Adenanthos', 'Banksia', 'Calytrix', 'Daviesia', 'Ep
 
 
 
-# STEP 2 :: Combine taxa occurrence data ----
+# STEP 2 :: Create raster grids ----
 
 
 ## 15km grids
 All.clim.grids.15km <- raster::stack(
   list.files('./data/SWAFR_data/Results/All_genera/',  pattern ="_15km_", full.names = TRUE))
 
-All.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/All_genera/', pattern ="_trimmed_", full.names = TRUE)) %>% 
-  .[!. %in% list.files('./data/SWAFR_data/Results/All_genera/',  pattern ="_15km_", full.names = TRUE)]
+All.clim.15km <- 
+  list.files('./data/SWAFR_data/Results/All_genera/',  pattern ="_15km_", full.names = TRUE)
+
+All.phylo.15km  <-
+  list.files('./data/SWAFR_data/Results/All_genera/', pattern ="_trimmed_", full.names = TRUE) %>% 
+  .[!. %in% All.clim.15km]
+
+All.phylo.grids.15km <- raster::stack(All.phylo.15km)
 
 
 Acacia.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Acacia/',  pattern ="_climate_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Acacia/',     pattern = "_climate_", full.names = TRUE))
 
 Acacia.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Acacia/', pattern ="_trimmed_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Acacia/',     pattern = "_trimmed_", full.names = TRUE))
 
 
 Adenanthos.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Adenanthos/',  pattern ="_15km_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Adenanthos/', pattern = "_15km_", full.names = TRUE))
 
 Adenanthos.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Adenanthos/', pattern ="_trimmed_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Adenanthos/', pattern = "_trimmed_", full.names = TRUE))
+
+
+Banksia.clim.grids.15km <- raster::stack(
+  list.files('./data/SWAFR_data/Results/Banksia/', pattern = "_15km_", full.names = TRUE))
+
+Banksia.phylo.grids.15km  <- raster::stack(
+  list.files('./data/SWAFR_data/Results/Banksia/', pattern = "_trimmed_", full.names = TRUE))
 
 
 Calytrix.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Calytrix/',  pattern ="_15km_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Calytrix/',   pattern = "_15km_", full.names = TRUE))
 
 Calytrix.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Calytrix/', pattern ="_trimmed_", full.names = TRUE)) %>% 
+  list.files('./data/SWAFR_data/Results/Calytrix/',   pattern = "_trimmed_", full.names = TRUE)) %>% 
   .[!. %in% list.files('./data/SWAFR_data/Results/Calytrix/',  pattern ="_15km_", full.names = TRUE) ]
 
 
 Daviesia.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Daviesia/',  pattern ="_15km_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Daviesia/',   pattern = "_15km_", full.names = TRUE))
 
 Daviesia.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Daviesia/', pattern ="_trimmed_", full.names = TRUE)) 
+  list.files('./data/SWAFR_data/Results/Daviesia/',   pattern ="_trimmed_", full.names = TRUE)) 
 
 
 Epacrids.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Epacrids/',  pattern ="_15km_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Epacrids/',   pattern ="_15km_", full.names = TRUE))
 
 Epacrids.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Epacrids/', pattern ="_trimmed_", full.names = TRUE)) 
+  list.files('./data/SWAFR_data/Results/Epacrids/',   pattern ="_trimmed_", full.names = TRUE)) 
 
 
 Eucalypt.clim.grids.15km <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Eucalypt/',  pattern ="_15km_", full.names = TRUE))
+  list.files('./data/SWAFR_data/Results/Eucalypt/',   pattern ="_15km_", full.names = TRUE))
 
 Eucalypt.phylo.grids.15km  <- raster::stack(
-  list.files('./data/SWAFR_data/Results/Eucalypt/', pattern ="_trimmed_", full.names = TRUE)) 
+  list.files('./data/SWAFR_data/Results/Eucalypt/',   pattern ="_trimmed_", full.names = TRUE)) 
 
 
 ## Rename the grids because I stuffed up in Biodiverse
-names(Acacia.clim.grids.15km)      <- gsub("SWAFR_climate_",           "",  names(Acacia.clim.grids.15km))
-names(Acacia.phylo.grids.15km)     <- gsub("SWAFR_epsg_3577_trimmed_", "",  names(Acacia.phylo.grids.15km))
+names(All.clim.grids.15km)      <- gsub("_SW_clipped_trimmed__15km_", "",  names(All.clim.grids.15km))
+names(All.phylo.grids.15km)     <- gsub("SW_clipped_trimmed_",         "",  names(All.phylo.grids.15km))
 
 names(Acacia.clim.grids.15km)      <- gsub("SWAFR_climate_",           "",  names(Acacia.clim.grids.15km))
 names(Acacia.phylo.grids.15km)     <- gsub("SWAFR_epsg_3577_trimmed_", "",  names(Acacia.phylo.grids.15km))
@@ -148,7 +157,6 @@ names(Calytrix.clim.grids.15km)    <- gsub("_SWAFR__15km__",           "_", name
 names(Calytrix.phylo.grids.15km)   <- gsub("SWAFR_epsg_3577_trimmed_", "",  names(Calytrix.phylo.grids.15km))
 
 
-
 ## Now remove the individual rasters
 # rm(list = ls(pattern = '_'))
 
@@ -156,29 +164,33 @@ names(Calytrix.phylo.grids.15km)   <- gsub("SWAFR_epsg_3577_trimmed_", "",  name
 
 
 
-# STEP 3 :: extract environmental values ----
-
-## The below shold really all be one big table
-## Where we use different columns for the analysis :: species, genus or family
-# Insects_ALA_1 <- read_csv('./data/ALA/Insects/recordsd-2022-05-12.csv')
-# Insects_ALA_2 <- read_csv('./data/ALA/Insects/records-2022-05-12_part2.csv')
+# STEP 3 :: create plots ----
 
 
-
-# STEP 4 :: pLOT ----
-# Create all the possible combinations of the two lists
+## Create all the possible combinations of the two lists
 acacia_mean_grids <- expand.grid(names(Acacia.clim.grids.15km), 
                                  names(Acacia.phylo.grids.15km)) %>% 
+  
+  ## Just get the 'mean mean' layers
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  dplyr::filter(grepl("mean_MEAN", raster1))
+
+
+## All genera 
+all_mean_grids <- expand.grid(names(All.clim.grids.15km), 
+                              names(All.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
   dplyr::filter(grepl("mean_MEAN", raster1))
 
 
-raster_combo_scatters(plot_list            = acacia_mean_grids,
-                      climate_raster_stack = Acacia.clim.grids.15km,
-                      context_raser_stack  = Acacia.phylo.grids.15km,
-                      out_dir              = paste0(swafr_out_dir, 'Acacia/'))
+## Update function to run on a list of taxa too
+raster_combo_scatters(plot_list            = all_mean_grids,
+                      climate_raster_stack = All.clim.grids.15km,
+                      context_raser_stack  = All.phylo.grids.15km,
+                      out_dir              = paste0(swafr_out_dir, 'All_genera/'))
 
 
 
