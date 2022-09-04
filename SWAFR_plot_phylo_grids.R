@@ -161,8 +161,8 @@ names(Banksia.clim.grids.15km)     <- gsub("_SWAFR__15km__",              "_", n
 names(Banksia.phylo.grids.15km)    <- gsub("SWAFR_epsg_3577_trimmed_",     "", names(Banksia.phylo.grids.15km))
 
 
-names(Calytrix.clim.grids.15km)    <- gsub("_SWAFR__15km__",              "_", names(Calytrix.clim.grids.15km))
-names(Calytrix.phylo.grids.15km)   <- gsub("SWAFR_epsg_3577_trimmed_",     "", names(Calytrix.phylo.grids.15km))
+names(Calytrix.clim.grids.15km)    <- gsub("_SWAFR_epsg_3577_trimmed__15km__",  "_", names(Calytrix.clim.grids.15km))
+names(Calytrix.phylo.grids.15km)   <- gsub("SWAFR_epsg_3577_trimmed_",          "", names(Calytrix.phylo.grids.15km))
 
 
 names(Daviesia.clim.grids.15km)    <- gsub("_SWAFR__15km__",              "_", names(Daviesia.clim.grids.15km))
@@ -181,12 +181,12 @@ names(Persoonia.clim.grids.15km)   <- gsub("_SWAFR__15km__",              "_", n
 names(Persoonia.phylo.grids.15km)  <- gsub("SWAFR_epsg_3577_trimmed_",     "", names(Persoonia.phylo.grids.15km))
 
 
-names(Thysanotus.clim.grids.15km)  <- gsub("_SWAFR__15km__",              "_", names(Thysanotus.clim.grids.15km))
+names(Thysanotus.clim.grids.15km)  <- gsub("SWAFR_15km__",              "", names(Thysanotus.clim.grids.15km))
 names(Thysanotus.phylo.grids.15km) <- gsub("SWAFR_epsg_3577_trimmed_",     "", names(Thysanotus.phylo.grids.15km))
 
 
 
-## Now remove the individual rasters
+## Some of these rasters are wrong...
 # rm(list = ls(pattern = '_'))
 plot(All.clim.grids.15km[['Australian_genera_Annual_mean_temp_mean_MEAN']])
 
@@ -422,6 +422,8 @@ Thysanotus_max_grids <- expand.grid(names(Thysanotus.clim.grids.15km),
 
 ## Update function toon a list of taxa too
 # for(taxa in swafr_taxa)
+options(scipen=10000)
+
 raster_combo_scatters(plot_list            = All_mean_grids,
                       climate_raster_stack = All.clim.grids.15km,
                       context_raser_stack  = All.phylo.grids.15km,
@@ -648,7 +650,6 @@ raster_combo_scatters(plot_list            = Thysanotus_max_grids,
                       ysize                = 20, 
                       lab_size             = 10,
                       out_dir              = paste0(SWAFR_out_dir, 'Thysanotus/'))
-
 
 
 
