@@ -1,9 +1,11 @@
-## ENVIRONMENT SETTINGS =============================================================
+#########################################################################################################################
+################################### -------- PHYLO PLOTS ------ #########################################################
+#########################################################################################################################
 
 
 # \
 # 
-# This code prepares all the data and code needed for the analysis of inverts habitat after the 2019-2020 fires ::
+# This code prepares all the data and code needed to plot the phylo grids ::
 #   
 #   
 #   \
@@ -186,23 +188,35 @@ names(Thysanotus.phylo.grids.15km) <- gsub("SWAFR_epsg_3577_trimmed_",     "", n
 
 ## Now remove the individual rasters
 # rm(list = ls(pattern = '_'))
+plot(All.clim.grids.15km[['Australian_genera_Annual_mean_temp_mean_MEAN']])
 
 
 
 
-
-# STEP 3 :: create plots ----
+# STEP 3 :: create grid lists ----
 
 
 ## Create all the possible combinations of the two lists
 ## Create a loop to do this...
 ## All genera 
+mean_match     <- c("mean_MEAN", "temp", "precip")
 All_mean_grids <- expand.grid(names(All.clim.grids.15km), 
                               names(All.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
+
+All_max_grids <- expand.grid(names(All.clim.grids.15km), 
+                             names(All.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
 
 
 ## Acacia
@@ -212,7 +226,20 @@ Acacia_mean_grids <- expand.grid(names(Acacia.clim.grids.15km),
   ## Just get the 'mean mean' layers
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Acacia_max_grids <- expand.grid(names(Acacia.clim.grids.15km), 
+                                names(Acacia.phylo.grids.15km)) %>% 
+  
+  ## Just get the 'mean mean' layers
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
 
 
 ## Adenanthos
@@ -222,7 +249,21 @@ Adenanthos_mean_grids <- expand.grid(names(Adenanthos.clim.grids.15km),
   ## Just get the 'mean mean' layers
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
+
+Adenanthos_max_grids <- expand.grid(names(Adenanthos.clim.grids.15km), 
+                                    names(Adenanthos.phylo.grids.15km)) %>% 
+  
+  ## Just get the 'mean mean' layers
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
 
 
 ## Banksia 
@@ -231,7 +272,19 @@ Banksia_mean_grids <- expand.grid(names(Banksia.clim.grids.15km),
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
+
+Banksia_max_grids <- expand.grid(names(Banksia.clim.grids.15km), 
+                                 names(Banksia.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
 
 
 ## Calytrix 
@@ -239,35 +292,85 @@ Calytrix_mean_grids <- expand.grid(names(Calytrix.clim.grids.15km),
                                    names(Calytrix.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
-         raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Calytrix_max_grids <- expand.grid(names(Calytrix.clim.grids.15km), 
+                                  names(Calytrix.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
 
 
 ## Daviesia 
-Calytrix_mean_grids <- expand.grid(names(Daviesia.clim.grids.15km), 
+Daviesia_mean_grids <- expand.grid(names(Daviesia.clim.grids.15km), 
                                    names(Daviesia.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
-         raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Daviesia_max_grids <- expand.grid(names(Daviesia.clim.grids.15km), 
+                                  names(Daviesia.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
 
 
 ## Epacrids 
-Calytrix_mean_grids <- expand.grid(names(Epacrids.clim.grids.15km), 
+Epacrids_mean_grids <- expand.grid(names(Epacrids.clim.grids.15km), 
                                    names(Epacrids.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
-         raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Epacrids_max_grids <- expand.grid(names(Epacrids.clim.grids.15km), 
+                                  names(Epacrids.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>%
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
 
 
 ## Eucalypt 
-Calytrix_mean_grids <- expand.grid(names(Eucalypt.clim.grids.15km), 
+Eucalypt_mean_grids <- expand.grid(names(Eucalypt.clim.grids.15km), 
                                    names(Eucalypt.phylo.grids.15km)) %>% 
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Eucalypt_max_grids <- expand.grid(names(Eucalypt.clim.grids.15km), 
+                                  names(Eucalypt.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
 
 
 ## Persoonia 
@@ -276,7 +379,19 @@ Persoonia_mean_grids <- expand.grid(names(Persoonia.clim.grids.15km),
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip"))
+
+
+Persoonia_max_grids <- expand.grid(names(Persoonia.clim.grids.15km), 
+                                   names(Persoonia.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
 
 
 ## Thysanotus 
@@ -285,24 +400,259 @@ Thysanotus_mean_grids <- expand.grid(names(Thysanotus.clim.grids.15km),
   
   rename(raster1 = Var1,
          raster2 = Var2) %>% 
-  dplyr::filter(grepl("mean_MEAN", raster1))
+  
+  dplyr::filter(grepl("mean_MEAN", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
+
+Thysanotus_max_grids <- expand.grid(names(Thysanotus.clim.grids.15km), 
+                                    names(Thysanotus.phylo.grids.15km)) %>% 
+  
+  rename(raster1 = Var1,
+         raster2 = Var2) %>% 
+  
+  dplyr::filter(grepl("max_MAX", raster1)) %>% 
+  dplyr::filter(str_detect(raster1, "temp|precip")) 
+
+
+
+
+# STEP 4 :: create grid plots ----
 
 
 ## Update function toon a list of taxa too
-raster_combo_scatters(plot_list            = all_mean_grids,
+# for(taxa in swafr_taxa)
+raster_combo_scatters(plot_list            = All_mean_grids,
                       climate_raster_stack = All.clim.grids.15km,
                       context_raser_stack  = All.phylo.grids.15km,
-                      out_dir              = paste0(swafr_out_dir, 'All_genera/'))
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'All_genera/'))
+
+
+raster_combo_scatters(plot_list            = Acacia_mean_grids,
+                      climate_raster_stack = Acacia.clim.grids.15km,
+                      context_raser_stack  = Acacia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Acacia/'))
+
+
+raster_combo_scatters(plot_list            = Acacia_max_grids,
+                      climate_raster_stack = Acacia.clim.grids.15km,
+                      context_raser_stack  = Acacia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Acacia/'))
+
+
+raster_combo_scatters(plot_list            = Adenanthos_mean_grids,
+                      climate_raster_stack = Adenanthos.clim.grids.15km,
+                      context_raser_stack  = Adenanthos.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Adenanthos/'))
+
+
+raster_combo_scatters(plot_list            = Adenanthos_max_grids,
+                      climate_raster_stack = Adenanthos.clim.grids.15km,
+                      context_raser_stack  = Adenanthos.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Adenanthos/'))
 
 
 raster_combo_scatters(plot_list            = Banksia_mean_grids,
                       climate_raster_stack = Banksia.clim.grids.15km,
                       context_raser_stack  = Banksia.phylo.grids.15km,
-                      out_dir              = paste0(swafr_out_dir, 'Banksia/'))
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Banksia/'))
 
 
-## END =============================================================
+raster_combo_scatters(plot_list            = Banksia_max_grids,
+                      climate_raster_stack = Banksia.clim.grids.15km,
+                      context_raser_stack  = Banksia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Banksia/'))
+
+
+raster_combo_scatters(plot_list            = Calytrix_mean_grids,
+                      climate_raster_stack = Calytrix.clim.grids.15km,
+                      context_raser_stack  = Calytrix.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Calytrix/'))
+
+
+raster_combo_scatters(plot_list            = Calytrix_max_grids,
+                      climate_raster_stack = Calytrix.clim.grids.15km,
+                      context_raser_stack  = Calytrix.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Calytrix/'))
+
+
+raster_combo_scatters(plot_list            = Daviesia_mean_grids,
+                      climate_raster_stack = Daviesia.clim.grids.15km,
+                      context_raser_stack  = Daviesia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Daviesia/'))
+
+
+raster_combo_scatters(plot_list            = Daviesia_max_grids,
+                      climate_raster_stack = Daviesia.clim.grids.15km,
+                      context_raser_stack  = Daviesia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Daviesia/'))
+
+
+raster_combo_scatters(plot_list            = Epacrids_mean_grids,
+                      climate_raster_stack = Epacrids.clim.grids.15km,
+                      context_raser_stack  = Epacrids.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Epacrids/'))
+
+
+raster_combo_scatters(plot_list            = Epacrids_max_grids,
+                      climate_raster_stack = Epacrids.clim.grids.15km,
+                      context_raser_stack  = Epacrids.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Epacrids/'))
+
+
+raster_combo_scatters(plot_list            = Eucalypt_mean_grids,
+                      climate_raster_stack = Eucalypt.clim.grids.15km,
+                      context_raser_stack  = Eucalypt.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Eucalypt/'))
+
+
+raster_combo_scatters(plot_list            = Eucalypt_max_grids,
+                      climate_raster_stack = Eucalypt.clim.grids.15km,
+                      context_raser_stack  = Eucalypt.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Eucalypt/'))
+
+
+raster_combo_scatters(plot_list            = Persoonia_mean_grids,
+                      climate_raster_stack = Persoonia.clim.grids.15km,
+                      context_raser_stack  = Persoonia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Persoonia/'))
+
+
+raster_combo_scatters(plot_list            = Persoonia_max_grids,
+                      climate_raster_stack = Persoonia.clim.grids.15km,
+                      context_raser_stack  = Persoonia.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Persoonia/'))
+
+
+raster_combo_scatters(plot_list            = Thysanotus_mean_grids,
+                      climate_raster_stack = Thysanotus.clim.grids.15km,
+                      context_raser_stack  = Thysanotus.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Thysanotus/'))
+
+
+raster_combo_scatters(plot_list            = Thysanotus_max_grids,
+                      climate_raster_stack = Thysanotus.clim.grids.15km,
+                      context_raser_stack  = Thysanotus.phylo.grids.15km,
+                      col_layer            = 'PHYLO_RPD1',
+                      
+                      mar                  = 1,
+                      xsize                = 20, 
+                      ysize                = 20, 
+                      lab_size             = 10,
+                      out_dir              = paste0(SWAFR_out_dir, 'Thysanotus/'))
 
 
 
 
+
+#########################################################################################################################
+################################### ------------ TBC ---------- #########################################################
+#########################################################################################################################
